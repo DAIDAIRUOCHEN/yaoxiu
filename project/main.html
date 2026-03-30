@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>盘绣非遗网站</title>
+
+    <!-- 思源黑体 -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Noto Sans SC", "思源黑体", sans-serif;
+            background-color: #ffffff;
+        }
+
+        /* ================= 顶部色块条纹 ================= */
+        .top-bar {
+            width: 100%;
+            height: 30px;
+            display: flex;
+        }
+
+        .top-bar div {
+            flex: 1;
+        }
+
+        .c1 { background-color: #1E6BB8; }
+        
+        .title-box {
+            background-color: #ffffff;
+            flex: 3 !important; /* 占据原来3个格子的宽度 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600; /* 加粗 */
+            font-size: 20px; /* 字体大小适配高度 */
+            color: #333;
+            white-space: nowrap;
+        }
+
+        .c5 { background-color: #FF2DAB; }
+        .c6 { background-color: #4CAF50; }
+        .c7 { background-color: #FF0000; }
+        .c8 { background-color: #4CAF50; }
+        .c9 { background-color: #FF2DAB; }
+        .c10 { background-color: #000000; }
+        .c11 { background-color: #F6E65A; }
+
+        /* ================= 导航栏 ================= */
+        .navbar {
+            width: 100%;
+            background-color: #ffffff;
+            border-bottom: 1px solid #eeeeee;
+        }
+
+        .nav-container {
+            width: 100%; /* 占满屏幕宽度 */
+            /* max-width: 1200px; 取消原来的最大宽度限制 */
+            margin: 0;
+            padding: 20px 50px; /* 增加左右间距，根据需要调整 */
+            display: flex;
+            align-items: center;
+            justify-content: flex-start; /* 改为从左排列，不再两端对齐 */
+        }
+
+        /* Logo */
+        .logo img {
+            height: 48px;
+            margin-right: 50px; /* 给logo右侧增加一点间距 */
+        }
+
+        /* 菜单 */
+        .nav-menu {
+            display: flex;
+            gap: 100px; /* 增大菜单项之间的间距，让它们分散 */
+            margin-left: 200px; /* 菜单整体往右移一点 */
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            font-size: 16px;
+            color: #666666;
+            position: relative;
+            padding-bottom: 6px;
+            transition: all 0.3s ease;
+        }
+
+        /* 下划线动画 */
+        .nav-menu a::after {
+            content: "";
+            position: absolute;   /* 绝对定位，相对于父级a标签定位 */
+            left: 0;              /* 从左边开始 */
+            bottom: 0;            /* 位于底部 */
+            width: 0;             /* 初始宽度为0，不可见 */
+            height: 2px;          /* 线条高度（粗细） */
+            background-color: #FF2DAB; /* 线条颜色 */
+            transition: width 0.3s ease; /* 宽度变化的过渡动画：属性 时间 速度曲线 */
+        }
+
+        .nav-menu a:hover {
+            color: #FF2DAB;
+        }
+
+        /* 鼠标悬停时，伪元素宽度变为100% */
+        .nav-menu a:hover::after {
+            width: 100%;
+        }
+
+        /* ================= 主图轮播区域 ================= */
+        .hero {
+            width: 100%;
+            height: 600px; /* 固定高度 */
+            position: relative; /* 为绝对定位的子元素（图片、按钮）提供参考 */
+            overflow: hidden; /* 隐藏超出范围的图片 */
+            margin: 0;
+            padding: 0;
+        }
+
+        /* 轮播图片容器 */
+        .carousel-inner {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        /* 每一张图片的基础样式 */
+        .carousel-item {
+            position: absolute; /* 绝对定位，重叠在一起 */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0; /* 默认透明（不显示） */
+            transition: opacity 1s ease-in-out; /* 透明度变化的过渡效果，实现丝滑淡入淡出 */
+            z-index: 0;
+        }
+
+        /* 当前激活显示的图片 */
+        .carousel-item.active {
+            opacity: 1; /* 完全显示 */
+            z-index: 1; /* 层级提高，盖住其他图片 */
+        }
+
+        .carousel-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* 裁剪填充 */
+            display: block;
+        }
+
+        /* 底部指示器（小圆点）容器 */
+        .carousel-indicators {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%); /* 水平居中 */
+            display: flex;
+            gap: 12px;
+            z-index: 2; /* 确保在图片上层 */
+        }
+
+        /* 指示器（小圆点）样式 */
+        .indicator {
+            width: 12px;
+            height: 12px;
+            background-color: rgba(255, 255, 255, 0.5); /* 半透明白色 */
+            border-radius: 50%; /* 圆形 */
+            cursor: pointer; /* 鼠标指针变为手型 */
+            transition: background-color 0.3s;
+        }
+
+        /* 激活状态的指示器 */
+        .indicator.active {
+            background-color: #ffffff; /* 纯白色高亮 */
+            transform: scale(1.2); /* 稍微放大 */
+        }
+
+        /* ================= 介绍区域 ================= */
+        .intro-section {
+            width: 100%;
+            padding: 0px 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .intro-box {
+            width: 90%; /* 比 overall_picture 略小 */
+            max-width: 1200px;
+            height: 200px; /* 您提到的高度或宽度，我在此先设为高度300 */
+            background-color: #f5f5f5; /* 浅灰色背景 */
+            display: flex;
+            align-items: center;
+            border-radius: 8px; /* 可选：圆角 */
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1); /* 可选：阴影 */
+        }
+
+        .intro-image {
+            width: 300px; /* 左侧图片区域固定宽度 */
+            height: 100%;
+            flex-shrink: 0;
+        }
+
+        .intro-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .intro-text {
+            flex: 1;
+            padding: 0 30px;
+            color: #333;
+            overflow-y: auto; /* 如果文字太多，允许滚动 */
+        }
+
+        .intro-text h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #000;
+        }
+
+        .intro-text p {
+            font-size: 14px;
+            line-height: 1.6;
+            text-align: justify;
+        }
+
+        /* ================= 标题区域 ================= */
+        .section-header {
+            text-align: center;
+            padding-top: 60px; /* 增加上间距，让介绍区域下移 */
+            padding-bottom: 20px;
+        }
+
+        .section-header h2 {
+            font-size: 36px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+
+        .section-header p {
+            font-size: 18px;
+            color: #666666;
+            letter-spacing: 1px;
+        }
+
+        /* ================= 响应式 ================= */
+        @media (max-width: 768px) {
+            .nav-menu {
+                gap: 20px;
+            }
+
+            .nav-menu a {
+                font-size: 14px;
+            }
+
+            .logo img {
+                height: 40px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- 顶部硬边界色块 -->
+    <div class="top-bar">
+        <div class="c1"></div>
+        <div class="title-box">指尖彩虹 土族盘绣</div>
+        <div class="c5"></div>
+        <div class="c6"></div>
+        <div class="c7"></div>
+        <div class="c8"></div>
+        <div class="c9"></div>
+        <div class="c10"></div>
+        <div class="c11"></div>
+    </div>
+
+    <!-- 导航栏 -->
+    <header class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <img src="img/logo.png" alt="logo">
+            </div>
+
+            <nav class="nav-menu">
+                <a href="#">首页</a>
+                <a href="#">产品系列</a>
+                <a href="#">盘绣纹样库</a>
+                <a href="#">绣娘故事</a>
+                <a href="#">联名合作</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 主图轮播 -->
+    <section class="hero">
+        <div class="carousel-inner">
+            
+            <!-- 第一张图片（默认激活 show） -->
+            <div class="carousel-item active" id="slide-1">
+                <img src="img/overall_picture.png" alt="盘绣图片1">
+            </div>
+
+            <!-- 第二张图片 -->
+            <div class="carousel-item" id="slide-2">
+                <img src="img/overall_picture01.jpg" alt="盘绣图片2">
+            </div>
+
+            <!-- 第三张图片 -->
+            <div class="carousel-item" id="slide-3">
+                <img src="img/overall_picture02.jpg" alt="盘绣图片3">
+            </div>
+
+        </div>
+
+        <!-- 底部圆形指示器（小圆点） -->
+        <div class="carousel-indicators">
+            <!-- onclick事件绑定切换函数 -->
+            <div class="indicator active" onclick="switchSlide(1)"></div>
+            <div class="indicator" onclick="switchSlide(2)"></div>
+            <div class="indicator" onclick="switchSlide(3)"></div>
+        </div>
+    </section>
+
+    <script>
+        // 自动轮播的时间间隔（毫秒），例如 5000 = 5秒
+        let autoPlayIntervalMs = 5000; 
+        let currentSlide = 1;
+        const totalSlides = 3; // 总共有几张图片
+        let slideTimer; // 定时器变量
+
+        // 切换幻灯片的核心函数（用户点击指示器时调用）
+        function switchSlide(n) {
+            // 1. 先清除旧的自动播放定时器，避免用户刚点完马上自动切走
+            clearInterval(slideTimer);
+
+            // 2. 更新界面
+            updateUI(n);
+
+            // 3. 重新开启定时器
+            startTimer();
+        }
+
+        // 下一张功能的辅助函数（自动播放时调用）
+        function nextSlide() {
+            let next = currentSlide + 1;
+            if (next > totalSlides) next = 1; // 如果超过最后一张，循环回到第一张
+            updateUI(next);
+        }
+
+        // 统一更新界面的函数
+        function updateUI(n) {
+            const slides = document.querySelectorAll('.carousel-item');
+            const indicators = document.querySelectorAll('.indicator');
+
+            // 移除所有 'active'
+            slides.forEach(slide => slide.classList.remove('active'));
+            indicators.forEach(item => item.classList.remove('active'));
+
+            // 设置新的 'active'
+            currentSlide = n;
+            if (slides[n-1]) slides[n-1].classList.add('active');
+            if (indicators[n-1]) indicators[n-1].classList.add('active');
+        }
+
+        // 启动自动播放
+        function startTimer() {
+            slideTimer = setInterval(nextSlide, autoPlayIntervalMs);
+        }
+
+        // 页面加载完成后启动自动轮播
+        window.addEventListener('load', startTimer);
+    </script>
+
+    <!-- 标题区域 -->
+    <div class="section-header">
+        <h2>指尖彩虹 土族盘绣</h2>
+        <p>盘绣介绍</p>
+    </div>
+
+    <!-- 介绍区域 -->
+    <section class="intro-section">
+        <div class="intro-box">
+            <div class="intro-image">
+                <img src="img/flag.png" alt="土族盘绣">
+            </div>
+            <div class="intro-text">
+                <p>土族盘绣，青海省互助县土族民间传统美术，国家非物质文化遗产之一。</p>
+                <p>土族盘绣艺术主要流传在青海互助县东沟、东山、五十、松多、丹麻等乡镇。在青海省都兰县发掘的土族先祖吐谷浑墓葬中，就出土有类似盘绣的绣品，由此可知，4世纪左右盘绣工艺已经出现。盘绣用料考究，加工精细，以黑色纯棉布做底料，再选面料贴上。盘绣是丝线绣，有红、黄、绿、
+蓝、紫、白等颜色，绣线细如发丝，绣工精细，图案生动，色彩艳丽。盘绣的图案以花卉、动物、人物、宗教等为主，具有浓郁的民族特色和艺术魅力。
+                </p>
+                <p>2006年5月20日，土族盘绣经国务院批准列入第三批国家级非物质文化遗产名录，项目编号为VII-24。</p>
+            </div>
+        </div>
+    </section>
+
+</body>
+</html>
