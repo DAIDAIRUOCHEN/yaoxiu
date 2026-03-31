@@ -18,6 +18,12 @@
         body {
             font-family: "Noto Sans SC", "思源黑体", sans-serif;
             background-color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
         }
 
         /* ================= 顶部色块条纹 ================= */
@@ -64,23 +70,24 @@
             width: 100%; /* 占满屏幕宽度 */
             /* max-width: 1200px; 取消原来的最大宽度限制 */
             margin: 0;
-            padding: 20px 50px; /* 增加左右间距，根据需要调整 */
+            padding: 20px 50px;
             display: flex;
             align-items: center;
-            justify-content: flex-start; /* 改为从左排列，不再两端对齐 */
+            justify-content: flex-start;
         }
 
         /* Logo */
         .logo img {
             height: 48px;
-            margin-right: 50px; /* 给logo右侧增加一点间距 */
+            margin-right: 32px;
         }
 
         /* 菜单 */
         .nav-menu {
             display: flex;
-            gap: 100px; /* 增大菜单项之间的间距，让它们分散 */
-            margin-left: 200px; /* 菜单整体往右移一点 */
+            gap: clamp(24px, 6vw, 100px);
+            margin-left: clamp(24px, 12vw, 200px);
+            flex-wrap: wrap;
         }
 
         .nav-menu a {
@@ -116,7 +123,7 @@
         /* ================= 主图轮播区域 ================= */
         .hero {
             width: 100%;
-            height: 600px; /* 固定高度 */
+            height: clamp(260px, 58vw, 600px);
             position: relative; /* 为绝对定位的子元素（图片、按钮）提供参考 */
             overflow: hidden; /* 隐藏超出范围的图片 */
             margin: 0;
@@ -138,8 +145,9 @@
             width: 100%;
             height: 100%;
             opacity: 0; /* 默认透明（不显示） */
-            transition: opacity 1s ease-in-out; /* 透明度变化的过渡效果，实现丝滑淡入淡出 */
+            transition: opacity 0.7s ease-in-out; /* 透明度变化的过渡效果，实现丝滑淡入淡出 */
             z-index: 0;
+            will-change: opacity;
         }
 
         /* 当前激活显示的图片 */
@@ -153,6 +161,8 @@
             height: 100%;
             object-fit: cover; /* 裁剪填充 */
             display: block;
+            backface-visibility: hidden;
+            transform: translateZ(0);
         }
 
         /* 底部指示器（小圆点）容器 */
@@ -193,7 +203,7 @@
         .intro-box {
             width: 90%; /* 比 overall_picture 略小 */
             max-width: 1200px;
-            height: 200px; /* 您提到的高度或宽度，我在此先设为高度300 */
+            min-height: 200px;
             background-color: #f5f5f5; /* 浅灰色背景 */
             display: flex;
             align-items: center;
@@ -203,7 +213,7 @@
         }
 
         .intro-image {
-            width: 300px; /* 左侧图片区域固定宽度 */
+            width: min(300px, 35%);
             height: 100%;
             flex-shrink: 0;
         }
@@ -217,7 +227,7 @@
 
         .intro-text {
             flex: 1;
-            padding: 0 30px;
+            padding: 18px 30px;
             color: #333;
             overflow-y: auto; /* 如果文字太多，允许滚动 */
         }
@@ -256,17 +266,121 @@
         }
 
         /* ================= 响应式 ================= */
-        @media (max-width: 768px) {
+        @media (max-width: 992px) {
+            .nav-container {
+                padding: 16px 24px;
+            }
+
             .nav-menu {
-                gap: 20px;
+                gap: 22px;
+                margin-left: 40px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .top-bar {
+                height: 24px;
+            }
+
+            .title-box {
+                font-size: 14px;
+                flex: 4 !important;
+            }
+
+            .nav-container {
+                padding: 12px 16px;
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .nav-menu {
+                width: 100%;
+                margin-left: 0;
+                gap: 14px;
+                row-gap: 10px;
             }
 
             .nav-menu a {
                 font-size: 14px;
+                white-space: nowrap;
             }
 
             .logo img {
-                height: 40px;
+                height: 36px;
+                margin-right: 0;
+            }
+
+            .hero {
+                height: clamp(220px, 56vw, 360px);
+            }
+
+            .carousel-item {
+                transition: opacity 0.45s ease-out;
+            }
+
+            .carousel-indicators {
+                gap: 8px;
+                bottom: 10px;
+            }
+
+            .indicator {
+                width: 10px;
+                height: 10px;
+            }
+
+            .section-header {
+                padding-top: 38px;
+                padding-bottom: 16px;
+            }
+
+            .section-header h2 {
+                font-size: 26px;
+                letter-spacing: 1px;
+            }
+
+            .section-header p {
+                font-size: 15px;
+            }
+
+            .intro-section {
+                padding: 0 12px;
+            }
+
+            .intro-box {
+                width: 100%;
+                flex-direction: column;
+                align-items: stretch;
+                border-radius: 6px;
+            }
+
+            .intro-image {
+                width: 100%;
+                height: 180px;
+            }
+
+            .intro-text {
+                padding: 14px 16px 18px;
+                overflow-y: visible;
+            }
+
+            .intro-text p {
+                font-size: 14px;
+                line-height: 1.8;
+            }
+        }
+
+        @media (max-width: 420px) {
+            .title-box {
+                font-size: 12px;
+            }
+
+            .nav-menu {
+                gap: 10px;
+            }
+
+            .nav-menu a {
+                font-size: 13px;
             }
         }
     </style>
@@ -310,17 +424,17 @@
             
             <!-- 第一张图片（默认激活 show） -->
             <div class="carousel-item active" id="slide-1">
-                <img src="img/overall_picture.png" alt="盘绣图片1">
+                <img src="img/overall_picture.png" alt="盘绣图片1" fetchpriority="high" decoding="async">
             </div>
 
             <!-- 第二张图片 -->
             <div class="carousel-item" id="slide-2">
-                <img src="img/overall_picture01.jpg" alt="盘绣图片2">
+                <img data-src="img/overall_picture01.jpg" alt="盘绣图片2" loading="lazy" decoding="async">
             </div>
 
             <!-- 第三张图片 -->
             <div class="carousel-item" id="slide-3">
-                <img src="img/overall_picture02.jpg" alt="盘绣图片3">
+                <img data-src="img/overall_picture02.jpg" alt="盘绣图片3" loading="lazy" decoding="async">
             </div>
 
         </div>
@@ -336,10 +450,31 @@
 
     <script>
         // 自动轮播的时间间隔（毫秒），例如 5000 = 5秒
-        let autoPlayIntervalMs = 5000; 
+        let autoPlayIntervalMs = 7000;
         let currentSlide = 1;
         const totalSlides = 3; // 总共有几张图片
         let slideTimer; // 定时器变量
+
+        // 按需加载图片，避免首屏同时解码多张大图导致卡顿
+        function ensureSlideLoaded(n) {
+            const slide = document.getElementById(`slide-${n}`);
+            if (!slide) return;
+
+            const img = slide.querySelector('img');
+            if (!img) return;
+
+            const lazySrc = img.getAttribute('data-src');
+            if (lazySrc && !img.getAttribute('src')) {
+                img.setAttribute('src', lazySrc);
+                img.removeAttribute('data-src');
+            }
+        }
+
+        function preloadNextSlide(n) {
+            let next = n + 1;
+            if (next > totalSlides) next = 1;
+            ensureSlideLoaded(next);
+        }
 
         // 切换幻灯片的核心函数（用户点击指示器时调用）
         function switchSlide(n) {
@@ -362,6 +497,7 @@
 
         // 统一更新界面的函数
         function updateUI(n) {
+            ensureSlideLoaded(n);
             const slides = document.querySelectorAll('.carousel-item');
             const indicators = document.querySelectorAll('.indicator');
 
@@ -373,15 +509,32 @@
             currentSlide = n;
             if (slides[n-1]) slides[n-1].classList.add('active');
             if (indicators[n-1]) indicators[n-1].classList.add('active');
+
+            // 当前显示后，顺带预加载下一张，减少下一次切换卡顿
+            setTimeout(() => preloadNextSlide(n), 120);
         }
 
         // 启动自动播放
         function startTimer() {
+            clearInterval(slideTimer);
             slideTimer = setInterval(nextSlide, autoPlayIntervalMs);
         }
 
         // 页面加载完成后启动自动轮播
-        window.addEventListener('load', startTimer);
+        window.addEventListener('load', () => {
+            ensureSlideLoaded(1);
+            preloadNextSlide(1);
+            startTimer();
+        });
+
+        // 页面切到后台时暂停轮播，降低手机 CPU 占用
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                clearInterval(slideTimer);
+            } else {
+                startTimer();
+            }
+        });
     </script>
 
     <!-- 标题区域 -->
